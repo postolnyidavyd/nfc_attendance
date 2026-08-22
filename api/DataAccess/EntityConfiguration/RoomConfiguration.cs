@@ -9,5 +9,8 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
     public void Configure(EntityTypeBuilder<Room> builder)
     {
         builder.HasKey(r => r.Id);
+        
+        builder.Property(r => r.Code).HasMaxLength(16).IsRequired();
+        builder.HasIndex(r => r.Code).IsUnique();
     }
 }
