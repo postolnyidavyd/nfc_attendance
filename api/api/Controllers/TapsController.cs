@@ -20,9 +20,15 @@ public class TapsController : ControllerBase
     {
         var result = await _tapService.AddRecordAsync(request, ct);
 
-        if (!result.Success)
-            return BadRequest(result);
+        if (result.Success)
+            return Ok(result);
 
-        return Ok(result);
+        return result.Reason switch
+        {
+            TapRejectReason.RoomNotFound => NotFound(result),
+            TapRejectReason.UserNotFound => NotFound(result),
+            TapRejectReason.AlreadyTapped => Conflict(result),
+            _ => BadRequest(result)
+        };
     }
 }

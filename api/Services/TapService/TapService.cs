@@ -23,12 +23,12 @@ public class TapService : ITapService
         var room = await _appDbContext.Rooms
             .FirstOrDefaultAsync(r => r.Code == request.RoomCode, ct);
         if (room is null)
-            return new TapResult(false, "Кімнати не існує", null);
+            return new TapResult(false, TapRejectReason.RoomNotFound, "Кімнати не існує", null);
 
         var userExists = await _appDbContext.Users
             .AnyAsync(u => u.Id == request.UserId, ct);
         if (!userExists)
-            return new TapResult(false, "Користувача не існує", null);
+            return new TapResult(false, TapRejectReason.UserNotFound, "Користувача не існує", null);
 
         var since = DateTimeOffset.UtcNow.AddMinutes(-_options.DuplicateWindowMinutes);
         var alreadyTapped = await _appDbContext.Taps
@@ -36,7 +36,7 @@ public class TapService : ITapService
                         && t.UserId == request.UserId
                         && t.CreatedAt >= since, ct);
         if (alreadyTapped)
-            return new TapResult(false, "Ви вже відмітились у цій кімнаті", null);
+            return new TapResult(false, TapRejectReason.AlreadyTapped, "Ви вже відмітились у цій кімнаті", null);
 
         var newTap = new Tap
         {
@@ -48,7 +48,7 @@ public class TapService : ITapService
         _appDbContext.Taps.Add(newTap);
         await _appDbContext.SaveChangesAsync(ct);
 
-        return new TapResult(true, null, newTap.Id);
+        return new TapResult(true, null, null, newTap.Id);
     }
 
     public async Task<TapListDto?> GetByRoomAsync(string roomCode, CancellationToken ct)

@@ -1,3 +1,3 @@
 namespace DTOs.Tap;
 
-public record TapResult(bool Success, string? RejectReason, Guid? TapId);
+public record TapResult(bool Success, TapRejectReason? Reason, string? Message, Guid? TapId);

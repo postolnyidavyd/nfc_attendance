@@ -12,5 +12,9 @@ public class TapConfiguration : IEntityTypeConfiguration<Tap>
 
         builder.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId);
         builder.HasOne(t => t.Room).WithMany().HasForeignKey(t => t.RoomId);
+
+        // Покриває дедуплікацію в AddRecordAsync (RoomId + UserId + CreatedAt)
+        // і фільтр за кімнатою в GetByRoomAsync (RoomId - провідна колонка).
+        builder.HasIndex(t => new { t.RoomId, t.UserId, t.CreatedAt });
     }
 }
