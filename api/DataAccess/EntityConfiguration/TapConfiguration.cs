@@ -10,7 +10,7 @@ public class TapConfiguration : IEntityTypeConfiguration<Tap>
     {
         builder.HasKey(t => t.Id);
 
-        builder.HasOne<User>().WithMany().HasForeignKey(t => t.UserId);
-        builder.HasOne<Room>().WithMany().HasForeignKey(t => t.RoomId);
+        builder.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId);
+        builder.HasOne(t => t.Room).WithMany().HasForeignKey(t => t.RoomId);
     }
 }

@@ -1,3 +1,3 @@
 namespace DTOs.Tap;
 
-public record TapRequest(Guid RoomId, Guid UserId);
+public record TapRequest(string RoomCode, Guid UserId);
